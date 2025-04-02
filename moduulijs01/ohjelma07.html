@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+<span id="output"></span>
+
+<script>
+"use strict";
+
+function print(str)
+{
+	document.querySelector("#output").innerHTML += str + "<br>";
+}
+
+function main()
+{
+	const rolls = parseInt(prompt("Dice rolls:"));
+	let sum = 0
+	for (let i = 0; i < rolls; i++) {
+		sum += (Math.random()*6+1);
+	}
+	print(`Sum: ${sum}`);
+}
+main();
+
+
+
+</script>
+
+</body>
+</html>

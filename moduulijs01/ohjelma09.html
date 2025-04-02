@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+<span id="output"></span>
+
+<script>
+"use strict";
+
+function print(str)
+{
+	document.querySelector("#output").innerHTML += str + "<br>";
+}
+
+function is_prime(num)
+{
+	for (let i = 2; i < num; i++) {
+		if (num % i == 0) { 
+			return false;
+		}
+	}
+	return true;
+}
+
+function main()
+{
+	const num = parseInt(prompt("Check prime:"));
+
+	if (is_prime(num)) {
+		print( `${num} is a prime` );
+	} else {
+		print( `${num} is not a prime` );
+	}
+
+}
+
+main();
+
+</script>
+
+</body>
+</html>

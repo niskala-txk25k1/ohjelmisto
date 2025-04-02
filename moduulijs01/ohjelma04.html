@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+<span id="output"></span>
+
+<script>
+"use strict";
+
+function print(str)
+{
+	document.querySelector("#output").innerHTML += str + "<br>";
+}
+
+const name = prompt("Student");
+const roll = Math.floor(Math.random()*4);
+
+let assign = ""
+if (roll == 0) {
+	assign = "Gryffindor";
+} else if (roll == 1) {
+	assign = "Slytherin";
+} else if (roll == 2) {
+	assign = "Hufflepuff";
+} else {
+	assign = "Ravenclaw";
+}
+
+print(`${name}, you are ${assign}`);
+
+</script>
+
+</body>
+</html>

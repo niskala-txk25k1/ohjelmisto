@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+<span id="output"></span>
+
+<script>
+"use strict";
+
+function print(str)
+{
+	document.querySelector("#output").innerHTML += str + "<br>";
+}
+
+function main()
+{
+	const dice = parseInt(prompt("Dice:"));
+	const sum  = parseInt(prompt("Sum:"));
+	const sims = 10000;
+	let   hits = 0;
+
+	for (let i = 0; i < sims; i++) {
+		let roll = 0;
+		for (let j = 0; j < dice; j++) {
+			roll += Math.floor((Math.random()*6+1));
+		}
+		if (roll == sum) hits++;
+		//console.log(roll);
+	}
+	print(`Probability to get sum ${sum} with ${dice} dice is ${((hits/sims)*100).toFixed(2)} %`);
+}
+main();
+
+
+
+</script>
+
+</body>
+</html>

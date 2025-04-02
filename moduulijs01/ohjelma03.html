@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+<span id="output"></span>
+
+<script>
+"use strict";
+
+function print(str)
+{
+	document.querySelector("#output").innerHTML += str + "<br>";
+}
+
+let ints = [0,0,0];
+
+let sum = 0
+let product = 0
+
+for (let i = 0; i < 3; i++) {
+	let num = parseInt(prompt(`Int ${i+1}:`))
+	
+	sum += num;
+	product *= num;
+
+	if (i == 0) product = num;
+}
+
+print(`Sum: ${sum}`)
+print(`Product: ${product}`)
+print(`Average: ${sum/3}`)
+
+</script>
+
+</body>
+</html>
