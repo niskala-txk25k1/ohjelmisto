@@ -20,7 +20,7 @@ function main()
 	const rolls = parseInt(prompt("Dice rolls:"));
 	let sum = 0
 	for (let i = 0; i < rolls; i++) {
-		sum += (Math.random()*6+1);
+		sum += Math.floor(Math.random()*6+1);
 	}
 	print(`Sum: ${sum}`);
 }
