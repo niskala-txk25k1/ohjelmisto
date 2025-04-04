@@ -15,7 +15,7 @@ function print(str)
 	document.querySelector("#output").innerHTML += str + "<br>";
 }
 
-let year = parseInt(prompt("Check leap year:"))
+const year = parseInt(prompt("Check leap year:"))
 
 if ((year%4==0) && !((year%100==0) && (year%400!=0))) {
 	print("Leap year")
