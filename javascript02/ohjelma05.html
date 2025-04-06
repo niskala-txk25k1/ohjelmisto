@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+	<script src="./shared.js"></script>
+</head>
+<body>
+<ul id="output"></ul>
+
+<script>
+"use strict";
+
+function main()
+{
+	const arr = [];
+	while (true) {
+		const num = promptInt(`Number ${arr.length+1}?`);
+		if (arr.indexOf(num) != -1) {
+			console.log("Number already given.")
+			break;
+		}
+		arr.push(num);
+	}
+
+	arr.sort((a,b)=>{return a-b});
+
+	for (const item of arr) {
+		console.log(item)
+	}
+}
+
+main();
+</script>
+
+</body>
+</html>

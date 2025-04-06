@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+<span id="output"></span>
+
+<script>
+"use strict";
+
+function print(str)
+{
+	document.querySelector("#output").innerHTML += str + ", ";
+}
+
+function main()
+{
+	const arr = [];
+	const count = 5;
+	for (let i = 0; i < count; i++) {
+		const num = parseInt( prompt(`Number ${i+1}?`) )
+		arr.push(num)
+	}
+
+	for (let i = count-1; i >= 0; i--) {
+		print(`${arr[i]}`);
+	}
+}
+
+
+main();
+</script>
+
+</body>
+</html>

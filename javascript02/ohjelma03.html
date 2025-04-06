@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+	<script src="./shared.js"></script>
+</head>
+<body>
+<ul id="output"></ul>
+
+<script>
+"use strict";
+
+function main()
+{
+	const arr = [];
+	const count = 6;
+	for (let i = 0; i < count; i++) {
+		arr.push(prompt(`Dog ${i+1}?`))
+	}
+
+	arr.sort().reverse();
+
+	const output = document.querySelector("#output");
+	for (const item of arr) {
+		put_li(item);
+	}
+}
+
+main();
+</script>
+
+</body>
+</html>

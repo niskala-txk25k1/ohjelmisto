@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+	<script src="./shared.js"></script>
+</head>
+<body>
+<ul id="output"></ul>
+
+<script>
+"use strict";
+
+function main()
+{
+	const arr = [];
+	while (true) {
+		const num = promptInt(`Number ${arr.length+1}?`);
+		arr.push(num);
+		if (num == 0) {
+			break;
+		}
+	}
+
+	arr.sort((a,b)=>{return b-a});
+
+	for (const item of arr) {
+		console.log(item)
+	}
+}
+
+main();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+	<script src="./shared.js"></script>
+</head>
+<body>
+<ul id="output"></ul>
+
+<script>
+"use strict";
+
+function roll_dice()
+{
+	return Math.floor( Math.random()*6+1 );
+}
+
+function main()
+{
+	while (true) {
+		const roll = roll_dice();
+		put_li(roll);
+		if (roll == 6) break;
+	}
+}
+
+main();
+</script>
+
+</body>
+</html>

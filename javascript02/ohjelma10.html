@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+	<script src="./shared.js"></script>
+</head>
+<body>
+<span id="output"></span>
+
+<script>
+"use strict";
+
+
+function main()
+{
+	const candidate_count = promptInt("Candidate count?");
+	const candidates = [];
+	for (let i = 0; i < candidate_count; i++) {
+		const name = prompt(`Name for candidate ${i+1}?`);
+		candidates.push({
+			name: name,
+			votes: 0
+		});
+	}
+	console.log(candidates);
+
+	const voter_count = promptInt("Voter count?");
+	for (let i = 0; i < voter_count; i++) {
+
+		const name = prompt(`Who do you vote for?`);
+
+		for (let candidate of candidates) {
+			if (candidate.name != name) continue;
+			candidate.votes++;
+		}
+		// Excersise doesn't require me to check if the vote actually matched
+		// anyone :) Empty vote doesn't match anyone anyway, no need to have
+		// a redundant check for that either :))
+	}
+
+	candidates.sort((a,b)=>{
+		return b.votes - a.votes;
+	});
+
+	console.log(`Winner is ${candidates[0].name} with ${candidates[0].votes} votes`);
+	console.log(`results:`);
+	for (let candidate of candidates) {
+
+		console.log(`${candidate.name}: ${candidate.votes} votes`);
+
+	}
+}
+
+main();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+	<script src="./shared.js"></script>
+</head>
+<body>
+<ol id="output"></ol>
+
+<script>
+"use strict";
+
+function main()
+{
+	const arr = [];
+	const count = promptInt(`Participants?`);
+	for (let i = 0; i < count; i++) {
+		arr.push(prompt(`Participant ${i+1}?`));
+	}
+
+	arr.sort();
+
+	for (const item of arr) {
+		put_li(item);
+	}
+}
+
+main();
+</script>
+
+</body>
+</html>

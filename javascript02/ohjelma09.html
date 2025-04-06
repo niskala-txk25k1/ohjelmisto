@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+	<script src="./shared.js"></script>
+</head>
+<body>
+<span id="output"></span>
+
+<script>
+"use strict";
+
+function concat(names)
+{
+	let output = "";
+	for (let name of names) {
+		output += name + ", ";
+	}
+	return output;
+}
+
+function even(arr)
+{
+	const out = [];
+
+	for (let num of arr) {
+		if (num % 2 == 0) {
+			out.push(num);
+		}
+	}
+
+	return out;
+}
+
+function main()
+{
+	let arr = [2, 7, 4]
+
+	put( concat( arr ) );
+	put("<br>")
+	put( concat( even(arr) ) );
+}
+
+main();
+</script>
+
+</body>
+</html>
