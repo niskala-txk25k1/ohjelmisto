@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+
+<form>
+	<input id="query" name="q" type="text">
+	<input type="submit" value="Search">
+</form>
+
+<div id="results"></div>
+
+<script>
+"use strict";
+
+const dom = {
+	form: document.querySelector("form"),
+	query: document.querySelector("#query"),
+	results: document.querySelector("#results"),
+};
+
+
+class Result {
+	constructor()
+	{
+		this.article = document.createElement("article");
+		return this;
+	}
+
+	add_title(text) {
+		const elem = document.createElement("h2")
+		elem.innerText = text;
+		this.article.appendChild(elem);
+		return this;
+	}
+
+	add_url(url) {
+		const elem = document.createElement("a")
+		elem.innerText = url;
+		elem.href = url;
+		elem.target = "_blank"
+		this.article.appendChild(elem);
+		return this;
+	}
+
+	 add_img(url, alt) {
+		/* Placeholder website is down, use local file instead */
+		if (!url) url = "./not_found.svg";
+		const elem = document.createElement("img")
+		elem.src = url;
+		elem.alt = alt;
+		this.article.appendChild(elem);
+		return this;
+	}
+
+	 add_summary(text) {
+		const elem = document.createElement("div")
+		elem.innerHTML = text;
+		this.article.appendChild(elem);
+		return this;
+	}
+
+	append(elem) {
+		elem.appendChild(this.article);
+	}
+}
+
+dom.form.addEventListener("submit", async (e)=>{
+	e.preventDefault();
+
+	dom.results.innerHTML = "";
+
+	const res = await fetch(`https://api.tvmaze.com/search/shows?q=${dom.query.value}`);
+	const results = await res.json();
+
+	for (const result of results) {
+		const show = result.show;
+
+		new Result()
+		.add_title   (show.name)
+		.add_url     (show.url)
+		.add_summary (show.summary)
+		.add_img     (show.image?.medium, show.name)
+		.append      (dom.results);
+	}
+
+});
+
+</script>
+
+</body>
+</html>

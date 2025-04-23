@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+
+<script>
+"use strict";
+
+async function main() {
+	const res = await fetch(`https://api.chucknorris.io/jokes/random`);
+	const data = await res.json()
+
+	console.log(data.value);
+
+}
+
+main();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+	<script src="./polyline.js"></script>
+	<style>
+	#map {
+		width: 800px;
+		height: 600px;
+	}
+	</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<form>
+<p>Route an address to Karamalmi 2:</p>
+<input id="query" name="q" type="text" size=100>
+<input type="submit" value="Search">
+</form>
+
+<p id="start"></p>
+<p id="end"></p>
+<p id="dur"></p>
+
+<script>
+"use strict";
+let api_key = "b88995f6c59f46b0af5a5d876ceb1dee"
+
+
+const proxy = 'https://users.metropolia.fi/~ilkkamtk/proxy.php?url=';
+
+const dom = {
+	form: document.querySelector("form"),
+	query: document.querySelector("#query"),
+	start: document.querySelector("#start"),
+	end: document.querySelector("#end"),
+	dur: document.querySelector("#dur"),
+}
+
+
+let map;
+
+class Geo {
+	constructor(text) {
+
+	}
+
+	async search(text) {
+		const options = {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'digitransit-subscription-key': api_key,
+			}
+		};
+		let url = `https://api.digitransit.fi/geocoding/v1/search?text=${text}&size=1`;
+		//url = proxy + encodeURIComponent(url);
+
+		const ret = await fetch(url, options);
+		if (ret.status != 200) {
+			throw "Response code not 200";
+		}
+		this.data = await ret.json();
+
+		this.gps = [
+			(this.data.bbox[1] + this.data.bbox[1+2]) / 2.0,
+			(this.data.bbox[0] + this.data.bbox[0+2]) / 2.0,
+		];
+		this.polygon = [
+			[ this.data.bbox[1+0], this.data.bbox[0+0] ],
+			[ this.data.bbox[1+0], this.data.bbox[0+2] ],
+			[ this.data.bbox[1+2], this.data.bbox[0+2] ],
+			[ this.data.bbox[1+2], this.data.bbox[0+0] ],
+		];
+
+		console.log(this.data);
+	}
+
+	lat() {
+		return this.gps[0];
+	}
+
+	lon() {
+		return this.gps[1];
+	}
+
+	async update(map) {
+		console.log(this.gps)
+		console.log(this.polygon)
+
+		if (!this.lmark)
+			this.lmark = L.marker(this.gps).addTo(map);
+		if (!this.lpoly)
+			this.lpoly = L.polygon(this.polygon, {color:'red'}).addTo(map);
+		console.log(this.lpoly)
+		this.lmark.setLatLng(this.gps).update();
+		this.lpoly.setLatLngs(this.polygon); //.update();
+	}
+}
+
+
+const origin = new Geo();
+const target = new Geo();
+
+
+let lines = [];
+
+async function get_route(origin, destination) {
+
+	for (const line of lines) {
+		map.removeLayer(line)
+	}
+
+	lines = [];
+
+	let url="https://api.digitransit.fi/routing/v2/hsl/gtfs/v1"
+	const GQLQuery = `{
+	  plan(
+		from: {lat: ${origin.lat()}, lon: ${origin.lon()}}
+		to: {lat: ${target.lat()}, lon: ${target.lon()}}
+		numItineraries: 1
+	  ) {
+		itineraries {
+		  legs {
+			startTime
+			endTime
+			mode
+			duration
+			distance
+			legGeometry {
+			  points
+			}
+		  }
+		}
+	  }
+	}`;
+
+	const options = {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/graphql',
+			'digitransit-subscription-key': api_key,
+			'Cache-Control': "no-cache",
+		},
+		body: (GQLQuery),
+	}
+
+	const ret = await fetch(url, options);
+	const data = await ret.json();
+	console.log(data)
+	const legs = data.data.plan.itineraries[0].legs;
+
+	for (let leg of legs) {
+		console.log(leg.mode)
+		console.log(leg)
+
+		let color = 'green';
+
+		switch (leg.mode) {
+			case 'WALK':
+				color = 'green';
+				break;
+			case 'BUS':
+				color = 'red';
+				break;
+			case 'RAIL':
+				color = 'violet'
+				break;
+			case 'TRAM':
+				color = 'magenta'
+				break;
+			default:
+				color = 'blue';
+				break;
+		}
+
+
+		let route = polyline.decode(leg.legGeometry.points);
+		let line = L.polyline(route).setStyle({color}).addTo(map);
+		lines.push(line);
+	}
+
+	const tstart = legs[0].startTime;
+	const tend   = legs[legs.length-1].endTime;
+	const tdiff = tend - tstart;
+
+	console.log(tstart, tend, tdiff)
+
+	dom.start.innerText = "Start: "+new Date(tstart).toLocaleString();
+	dom.end.innerText = "End: " + new Date(tend).toLocaleString();
+
+	let minutes = Math.round(tdiff/1000/60);
+	const hours = Math.floor(minutes/60);
+	minutes -= hours * 60;
+
+	dom.dur.innerText = `Duration: ${hours} h ${minutes} min`
+
+	map.fitBounds([origin.gps, target.gps])
+	return data;
+}
+
+
+
+dom.form.addEventListener("submit", async (e)=>{
+	e.preventDefault();
+
+	await origin.search(dom.query.value);
+	await origin.update(map);
+
+	const line = [origin.gps, target.gps]
+
+	get_route(origin, target)
+});
+
+
+async function main() {
+	if (!api_key) api_key = prompt("Enter digitransit.fi api key:")
+
+
+	try {
+		await target.search("Karaportti 2");
+	} catch(e) {
+		alert("Failed to fetch Karaportti 2 GPS address. Invalid API key?")
+		return;
+	}
+
+	console.log(target);
+
+	map = L.map('map').setView(target.gps, 13);
+
+	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+	}).addTo(map);
+
+	target.update(map);
+}
+main();
+
+</script>
+
+</body>
+</html>

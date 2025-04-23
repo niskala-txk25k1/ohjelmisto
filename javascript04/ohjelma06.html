@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body>
+
+<form>
+	<input id="query" name="q" type="text">
+	<input type="submit" value="Search">
+</form>
+
+<div id="target"></div>
+
+<script>
+"use strict";
+
+const dom = {
+	form: document.querySelector("form"),
+	query: document.querySelector("#query"),
+	target: document.querySelector("#target"),
+};
+
+dom.form.addEventListener("submit", async (e)=>{
+	e.preventDefault();
+
+	const res = await fetch(`https://api.chucknorris.io/jokes/search?query=${dom.query.value}`);
+	const data = await res.json();
+
+	for (const joke of data.result) {
+		const article = document.createElement("article");
+		const p = document.createElement("p");
+		p.innerText = joke.value;
+		article.appendChild(p);
+		dom.target.appendChild(article);
+	}
+
+});
+
+</script>
+
+</body>
+</html>
